@@ -5,7 +5,8 @@ public class Pilot : MonoBehaviour {
 
 
     public float health;
-    public bool isEngaged;
+    public bool isChasing;
+    public bool beingChased;
     public string idealTarget;
 
     public Vector3 velocity;
@@ -33,8 +34,9 @@ public class Pilot : MonoBehaviour {
     public Transform shotPos;
     public float shotForce;
 
-    public bool launchBehavior;
-    
+    public bool launchEnabled;
+    public bool encircleEnabled;
+   
 
     public int waypointcount = 10;
     public int radius = 10;
@@ -65,6 +67,12 @@ public class Pilot : MonoBehaviour {
             current = (current + 1) % waypoints.Count;
         }
 
+        if (launchEnabled)
+        {
+            transform.Translate(transform.forward * 1000);
+            launchEnabled = false;
+        }
+
         if (seekEnabled) {
 			seekTarget = waypoints [current];
 			force = Seek (seekTarget);
@@ -76,16 +84,20 @@ public class Pilot : MonoBehaviour {
 			force = Arrive (arriveTarget);
 		}
 
-        if (pursueEnabled) {
-			pursueTarget = FindNewTarget ();
+        if (pursueEnabled && !isChasing) {
+			FindNewTarget ();
 			force = Pursue (pursueTarget);
 		}
 
-        if (isEngaged && pursueEnabled) {
-			fireAtTarget ();
-		}
+        if (isChasing && pursueEnabled)
+        {
+            fireAtTarget();
+        }
 
-
+        if (encircleEnabled)
+        {
+            transform.RotateAround(new Vector3(0, 0, 0), Vector3.forward, 5 * Time.deltaTime);
+        }
 
         force = Vector3.ClampMagnitude(force, maxForce);
         acceleration = force / mass;
@@ -101,23 +113,22 @@ public class Pilot : MonoBehaviour {
 
     void fireAtTarget()
     {
-        GameObject shot = Instantiate(projectile, shotPos.position, shotPos.rotation) as GameObject;
-        shot.GetComponent<Rigidbody>().AddForce(shotPos.forward * shotForce);
+        GameObject.Instantiate(projectile, shotPos.position, shotPos.rotation);     
     }
 
 
-    GameObject FindNewTarget()
+    void FindNewTarget()
     {
         GameObject[] targets = GameObject.FindGameObjectsWithTag(idealTarget);
 
         foreach(GameObject t in targets)
         {
-            if (!t.GetComponent<Pilot>().isEngaged)
+            if (!t.GetComponent<Pilot>().beingChased)
             {
-                return t;
+                pursueTarget = t;
             }
         }
-        return GameObject.FindGameObjectWithTag(idealTarget);//return first target as new target even if engaged
+        pursueTarget = GameObject.FindGameObjectWithTag(idealTarget);//return first target as new target even if engaged
     }
 
     Vector3 Seek(Vector3 target)
@@ -150,7 +161,8 @@ public class Pilot : MonoBehaviour {
         float lookAhead = toTarget.magnitude / maxSpeed;
         pursueTargetPos = target.transform.position
            + (target.GetComponent<Pilot>().velocity * lookAhead);
-        target.GetComponent<Pilot>().isEngaged = true;
+        target.GetComponent<Pilot>().beingChased = true;
+        isChasing = true;
         return Seek(pursueTargetPos);
     }
 

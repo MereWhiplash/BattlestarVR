@@ -4,12 +4,23 @@ using System;
 
 public class Tidy : MonoBehaviour {
 
+    private float initTime;
+    void Start ()
+    {
+        initTime = Time.timeSinceLevelLoad;
+    }
 	void Update () {
 
 		if(Vector3.Distance(transform.position, new Vector3(0,0,0)) > 10000)
         {
-            Destroy(this);
+            Destroy(this.gameObject);
         }
+
+        if(Time.timeSinceLevelLoad - initTime > 1000)
+        {
+            Destroy(this.gameObject);
+        }
+       
 	}
 
 	void OnCollisionEnter(Collision collision){
@@ -20,6 +31,6 @@ public class Tidy : MonoBehaviour {
         {
             Debug.Log("Miss");
         }
-        Destroy (this);
+        Destroy (this.gameObject);
 	}
 }
