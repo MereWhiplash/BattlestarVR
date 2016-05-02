@@ -87,7 +87,13 @@ public class Pilot : MonoBehaviour {
         if (pursueEnabled && !isChasing) {
 			FindNewTarget ();
 			force = Pursue (pursueTarget);
-		}
+            seekEnabled = false;
+            arriveEnabled = false;
+        }else
+        {
+            seekEnabled = true;
+            arriveEnabled = true;
+        }
 
         if (isChasing && pursueEnabled)
         {
@@ -113,7 +119,8 @@ public class Pilot : MonoBehaviour {
 
     void fireAtTarget()
     {
-        GameObject.Instantiate(projectile, shotPos.position, shotPos.rotation);     
+        GameObject t = GameObject.Instantiate(projectile, shotPos.position, transform.rotation) as GameObject;
+        //t.GetComponent<ProjectileMove>().origin = transform.position;
     }
 
 
@@ -123,12 +130,11 @@ public class Pilot : MonoBehaviour {
 
         foreach(GameObject t in targets)
         {
-            if (!t.GetComponent<Pilot>().beingChased)
+            if (!t.GetComponent<Pilot>().beingChased && !t.GetComponent<Pilot>().isChasing)
             {
                 pursueTarget = t;
             }
         }
-        pursueTarget = GameObject.FindGameObjectWithTag(idealTarget);//return first target as new target even if engaged
     }
 
     Vector3 Seek(Vector3 target)
