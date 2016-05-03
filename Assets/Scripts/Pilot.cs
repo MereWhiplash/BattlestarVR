@@ -85,12 +85,15 @@ public class Pilot : MonoBehaviour {
 		}
 
         if (pursueEnabled && !isChasing) {
-            pursueTarget = GetClosestEnemy();
+			FindNewTarget ();
 			force = Pursue (pursueTarget);
             seekEnabled = false;
             arriveEnabled = false;
+        }else
+        {
+            seekEnabled = true;
+            arriveEnabled = true;
         }
-
 
         if (isChasing && pursueEnabled)
         {
@@ -129,29 +132,10 @@ public class Pilot : MonoBehaviour {
 
     void fireAtTarget()
     {
-        //GameObject t = GameObject.Instantiate(projectile, shotPos.position, transform.rotation) as GameObject;
+        GameObject t = GameObject.Instantiate(projectile, shotPos.position, transform.rotation) as GameObject;
         //t.GetComponent<ProjectileMove>().origin = transform.position;
     }
 
-    GameObject GetClosestEnemy()
-    {
-        GameObject bestTarget = null;
-        float closestDistanceSqr = Mathf.Infinity;
-        Vector3 currentPosition = transform.position;
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag(idealTarget);
-        foreach (GameObject potentialTarget in enemies)
-        {
-            Vector3 directionToTarget = potentialTarget.transform.position - currentPosition;
-            float dSqrToTarget = directionToTarget.sqrMagnitude;
-            if (dSqrToTarget < closestDistanceSqr)
-            {
-                closestDistanceSqr = dSqrToTarget;
-                bestTarget = potentialTarget;
-            }
-        }
-
-        return bestTarget;
-    }
 
     void FindNewTarget()
     {

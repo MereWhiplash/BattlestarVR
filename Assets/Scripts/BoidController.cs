@@ -50,9 +50,4 @@ public class BoidController : MonoBehaviour {
         centroid = centre / (flockSize);
         velocity = currentVelocity / (flockSize);
 	}
-
-    //void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawSphere(centroid,5);
-    //}
 }
