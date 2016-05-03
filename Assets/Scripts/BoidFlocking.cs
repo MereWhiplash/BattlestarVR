@@ -32,6 +32,7 @@ public class BoidFlocking : MonoBehaviour {
                 {
                     GetComponent<Rigidbody>().velocity = GetComponent<Rigidbody>().velocity.normalized * minVelocity;
                 }
+                //transform.LookAt(target.transform.position);
             }
             float waitTime = Random.Range(0.3f, 0.5f);
             yield return new WaitForSeconds(waitTime);
@@ -52,7 +53,7 @@ public class BoidFlocking : MonoBehaviour {
         flockVelocity = flockVelocity - GetComponent<Rigidbody>().velocity;
         follow = follow - transform.localPosition;
 
-        return (flockCentroid - flockVelocity + (follow * 2) + (randomize * randomness));
+        return (flockCentroid - flockVelocity + (follow * 2));// + (randomize * randomness));
     }
 
     public void SetController (GameObject theController)
