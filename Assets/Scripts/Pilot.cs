@@ -100,6 +100,11 @@ public class Pilot : MonoBehaviour {
             fireAtTarget();
         }
 
+        if (beingChased)
+        {
+            force = Flee(seekTarget);
+        }
+
         if (encircleEnabled)
         {
             transform.RotateAround(new Vector3(0, 0, 0), Vector3.forward, 5 * Time.deltaTime);
@@ -115,6 +120,14 @@ public class Pilot : MonoBehaviour {
         if (velocity.magnitude > float.Epsilon)
             transform.forward = velocity;
 
+    }
+
+    Vector3 Flee(Vector3 target)
+    {
+        Vector3 toTarget = transform.position - target;
+        toTarget.Normalize();
+        Vector3 desired = toTarget * maxSpeed;
+        return desired - velocity;
     }
 
     void fireAtTarget()
