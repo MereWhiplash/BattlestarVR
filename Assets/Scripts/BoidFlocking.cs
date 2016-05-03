@@ -3,12 +3,12 @@ using System.Collections;
 
 public class BoidFlocking : MonoBehaviour {
 
-    GameObject controller;
-    bool init = false;
-    float minVelocity;
-    float maxVelocity;
-    float randomness;
-    GameObject target;
+    private GameObject controller;
+    private bool init = false;
+    private float minVelocity;
+    private float maxVelocity;
+    private float randomness;
+    private GameObject target;
 
 
 	// Use this for initialization
@@ -59,8 +59,8 @@ public class BoidFlocking : MonoBehaviour {
     {
         controller = theController;
         BoidController boidController = controller.GetComponent<BoidController>();
-        minVelocity = boidController.minSpeed;
-        maxVelocity = boidController.maxSpeed;
+        minVelocity = boidController.minVelocity;
+        maxVelocity = boidController.maxVelocity;
         randomness = boidController.randomness;
         target = boidController.target;
         init = true;
