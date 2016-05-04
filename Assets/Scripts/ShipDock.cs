@@ -4,6 +4,7 @@ using System.Collections;
 public class ShipDock : MonoBehaviour {
 
     public GameObject shipPrefab;
+    public float spawnRadius;
     public int numOfShips = 10;
     int spawned;
 
@@ -17,7 +18,7 @@ public class ShipDock : MonoBehaviour {
         if (spawned < numOfShips)
         {
             GameObject ship = Instantiate(shipPrefab);
-            ship.transform.position = this.transform.position;
+            ship.transform.position = new Vector3(Random.insideUnitSphere.x * spawnRadius, Random.insideUnitSphere.y * spawnRadius, Random.insideUnitSphere.z * spawnRadius) + transform.position;
             spawned++;
         }
     }

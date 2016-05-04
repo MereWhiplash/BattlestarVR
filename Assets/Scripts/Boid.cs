@@ -11,7 +11,6 @@ public class Boid : MonoBehaviour
     public float straighteningTendancy = 0.2f;
     public float damping = 0.0f;
 
-
     public bool isChasing;
     public bool beingChased;
 
@@ -27,7 +26,7 @@ public class Boid : MonoBehaviour
 
     public bool fleeEnabled;
     public float fleeRange = 15.0f;
-    public Vector3 fleeTargetPosition;
+    public GameObject fleeTarget;
 
     public bool pursueEnabled;
     public GameObject pursueTarget;
@@ -149,6 +148,11 @@ public class Boid : MonoBehaviour
                     distance = curDistance;
                 }
             }
+        }
+        if(closest != null)
+        {
+            closest.GetComponent<Boid>().beingChased = true;
+            closest.GetComponent<Boid>().fleeTarget = this.gameObject;
         }
         return closest;
     }
@@ -279,9 +283,9 @@ public class Boid : MonoBehaviour
             force += Arrive(arriveTargetPosition);
         }
 
-        if (fleeEnabled && beingChased)
+        if (fleeEnabled && beingChased && fleeTarget != null)
         {
-            force += Flee(fleeTargetPosition, fleeRange);
+            force += Flee(fleeTarget.transform.position, fleeRange);
             arriveEnabled = false;
             seekEnabled = false;
         }
